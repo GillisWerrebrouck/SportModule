@@ -1,0 +1,20 @@
+{
+  "name": "sport_module_server",
+  "version": "1.0.0",
+  "description": "Read data from the serial port and insert it into the database.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GillisWerrebrouck/SportModule.git"
+  },
+  "author": "Gillis Werrebrouck",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GillisWerrebrouck/SportModule/issues"
+  },
+  "homepage": "https://github.com/GillisWerrebrouck/SportModule#readme",
+  "dependencies": {}
+}
