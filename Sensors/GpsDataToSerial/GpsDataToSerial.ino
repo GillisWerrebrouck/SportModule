@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial SoftSerial(2, 3);
-char buffer[265];
+char buffer[256];
 int count=0;
 
 void setup()
@@ -17,7 +17,7 @@ void loop()
     while(SoftSerial.available())
     {
       buffer[count++]=SoftSerial.read();
-      if(count == 265)break;
+      if(count == 256)break;
     }
 
     String value = "";
@@ -30,13 +30,14 @@ void loop()
         if(buffer[i] == 44)
           commaCount++;
             
-        if(commaCount == 14)
+        if(commaCount == 15)
           isEnd = true;
 
         if(isEnd == true){
-          i -= 6;
           for(int x = 0; x <= i; x++){
             char current = char(buffer[x]);
+            if(current == '\r')
+              break;
             value += current;
           }
 
@@ -45,6 +46,7 @@ void loop()
           Serial.println(getValue(value,',',1));
           Serial.println(getValue(value,',',2));
           Serial.println(getValue(value,',',4));
+          Serial.println(getValue(value,',',11));
         }
       }
     }
