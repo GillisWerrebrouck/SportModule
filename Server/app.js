@@ -17,9 +17,9 @@ var routeId = null;
 const uuidV1 = require('uuid/v1');
 
 serialPort.on("open", function () {
-	console.log('Serial port "' + serialPortName + '" open ...');
+	console.log('Serial port "' + serialPortName + '" open ...\n');
 	serialPort.on("data", function(data) {
-		console.log("\nSerial data: " + data.toString());
+		console.log("Serial data: " + data.toString());
 		
 		if(data.toString() == 1 && !started) {
 			started = true;
@@ -28,7 +28,9 @@ serialPort.on("open", function () {
 			var dt = dateTime.create();
 			var now = dt.format('Y-m-d H:M:S');
 			var routeData = {routeId: routeId, startDate: now, endDate: null};
-			sqlhelper.insert("route", routeData);
+			sqlhelper.insert("route", routeData, function(data) {
+				console.log(data);
+			});
 		}
 		
 		if(data.toString() == 0 && started) {
@@ -38,7 +40,9 @@ serialPort.on("open", function () {
 			var now = dt.format('Y-m-d H:M:S');
 			var routeData = {endDate: now};
 			var condition = {routeId: routeId};
-			sqlhelper.update("route", routeData, condition);
+			sqlhelper.update("route", routeData, condition, function(data) {
+				console.log(data);
+			});
 		}
 		
 		if(data.toString() != 0 && data.toString() != 1 && started){
@@ -47,7 +51,9 @@ serialPort.on("open", function () {
 			var dt = dateTime.create();
 			var now = dt.format('Y-m-d H:M:S');
 			var geoData = {geoId: geoId, routeId: routeId, latitude: geoJSON["latitude"], longitude: geoJSON["longitude"], altitude: geoJSON["altitude"], time: now};
-			sqlhelper.insert("geoData", geoData);
+			sqlhelper.insert("geoData", geoData, function(data) {
+				console.log(data);
+			});
 		}
 	});
 });

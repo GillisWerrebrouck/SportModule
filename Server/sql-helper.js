@@ -1,5 +1,4 @@
 var mysql = require("mysql");
-var async = require("./async");
 
 dbConnection = {
 	connection: null,
@@ -20,23 +19,23 @@ dbConnection = {
 
 function SQLHelper() {};
 
-SQLHelper.prototype.select = function(table) {
+SQLHelper.prototype.select = function(table, callback) {
 	dbConnection.connect();
 	dbConnection.connection.query("SELECT * FROM " + table, function(err, rows, fields) {
-		async.get(rows);
+		callback(rows);
 	});
 	dbConnection.end();
 };
 
-SQLHelper.prototype.insert = function(table, data) {
+SQLHelper.prototype.insert = function(table, data, callback) {
 	dbConnection.connect();
 	dbConnection.connection.query("INSERT into " + table + " SET ?", data, function(err, result) {
-		async.get(result);
+		callback(result);
 	});
 	dbConnection.end();
 };
 
-SQLHelper.prototype.update = function(table, data, condition) {
+SQLHelper.prototype.update = function(table, data, condition, callback) {
 	var stmt = "UPDATE " + table + " SET ";
 	var values = [];
 	
@@ -57,7 +56,7 @@ SQLHelper.prototype.update = function(table, data, condition) {
 	
 	dbConnection.connect();
 	dbConnection.connection.query(stmt, values, function(err, results, fields) {
-		async.get(results);
+		callback(results);
 	});
 	dbConnection.end();
 };
