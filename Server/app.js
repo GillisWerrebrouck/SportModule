@@ -50,7 +50,12 @@ serialPort.on("open", function () {
 			var geoId = uuidV1();
 			var dt = dateTime.create();
 			var now = dt.format('Y-m-d H:M:S');
-			var geoData = {geoId: geoId, routeId: routeId, latitude: geoJSON["latitude"], longitude: geoJSON["longitude"], altitude: geoJSON["altitude"], time: now};
+			
+			var latVal = parseFloat(geoJSON["latitude"].toString().substring(0,2)) + parseFloat(geoJSON["latitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["latitude"].toString().substring(4,9))/60;
+			var longVal = parseFloat(geoJSON["longitude"].toString().substring(0,2)) + parseFloat(geoJSON["longitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["longitude"].toString().substring(4,9))/60;
+			var altVal = parseFloat(geoJSON["altitude"].toString().substring(0,2)) + parseFloat(geoJSON["altitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["altitude"].toString().substring(4,9))/60;
+			
+			var geoData = {geoId: geoId, routeId: routeId, latitude: latVal, longitude: longVal, altitude: altVal, time: now};
 			sqlhelper.insert("geoData", geoData, function(data) {
 				console.log(data);
 			});
