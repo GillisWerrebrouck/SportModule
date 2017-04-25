@@ -1,16 +1,37 @@
 #include <SoftwareSerial.h>
+#define BUTTON_PIN 20
 
 SoftwareSerial SoftSerial(2, 3);
 char buffer[256];
 int count=0;
+boolean routeStarted = false;
 
 void setup()
 {
   SoftSerial.begin(9600);
   Serial.begin(9600);
+  pinMode(BUTTON_PIN, INPUT);
 }
  
 void loop()
+{
+  checkButton();
+  checkGPS();
+}
+
+void checkButton()
+{
+  if (digitalRead(BUTTON_PIN) == HIGH) 
+  {
+    routeStarted = !routeStarted;
+    if(routeStarted)
+      Serial.println("1");
+    else
+      Serial.println("0");
+  }
+}
+
+void checkGPS()
 {
   if (SoftSerial.available())
   {
@@ -40,13 +61,15 @@ void loop()
               break;
             value += current;
           }
-
-          Serial.println(value);
           
-          Serial.println(getValue(value,',',1));
-          Serial.println(getValue(value,',',2));
-          Serial.println(getValue(value,',',4));
-          Serial.println(getValue(value,',',11));
+          //String sLat = getValue(value,',',2);
+          //float fLat = (sLat.substring(0,2)).toFloat() + (sLat.substring(2,4)).toFloat() / 60.0f + (sLat.substring(4,9)).toFloat() / 60.0f;
+          //String sLong = getValue(value,',',4);
+          //float fLong = (sLong.substring(0,2)).toFloat() + (sLong.substring(2,4)).toFloat() / 60.0f + (sLong.substring(4,9)).toFloat() / 60.0f;
+
+          String geo = "{\"latitude\":" + getValue(value,',',2) + ",\"longitude\":" + getValue(value,',',4) + ",\"altitude\":0}";
+
+          Serial.println(geo);
         }
       }
     }
