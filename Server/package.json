@@ -16,5 +16,9 @@
     "url": "https://github.com/GillisWerrebrouck/SportModule/issues"
   },
   "homepage": "https://github.com/GillisWerrebrouck/SportModule#readme",
-  "dependencies": {}
+  "dependencies": {
+    "mysql": "^2.13.0",
+    "serialport": "^4.0.7"
+  },
+  "devDependencies": {}
 }
