@@ -18,7 +18,9 @@
   "homepage": "https://github.com/GillisWerrebrouck/SportModule#readme",
   "dependencies": {
     "mysql": "^2.13.0",
-    "serialport": "^4.0.7"
+    "node-datetime": "^1.0.0",
+    "serialport": "^4.0.7",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {}
 }
