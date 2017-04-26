@@ -6,29 +6,44 @@ char buffer[256];
 int count=0;
 boolean routeStarted = false;
 
+unsigned long interval = 1000; // the time we need to wait
+unsigned long previousMillis = 0; // millis() returns an unsigned long.
+
 void setup()
 {
   SoftSerial.begin(9600);
   Serial.begin(9600);
   pinMode(BUTTON_PIN, INPUT);
 }
- 
+
 void loop()
 {
   checkButton();
-  checkGPS();
+  
+  unsigned long currentMillis = millis(); // grab current time
+
+  // check if "interval" time has passed (1000 milliseconds)
+  if ((unsigned long)(currentMillis - previousMillis) >= interval) {
+    checkGPS();
+    // save the "current" time
+    previousMillis = millis();
+  }
 }
+
+boolean previousButtonState = false;
 
 void checkButton()
 {
-  if (digitalRead(BUTTON_PIN) == HIGH) 
-  {
+  boolean currentButtonState = digitalRead(BUTTON_PIN);
+  if (previousButtonState != currentButtonState && digitalRead(BUTTON_PIN) == HIGH){
     routeStarted = !routeStarted;
     if(routeStarted)
       Serial.println("1");
     else
       Serial.println("0");
   }
+
+  previousButtonState = currentButtonState;
 }
 
 void checkGPS()
@@ -67,14 +82,22 @@ void checkGPS()
           //String sLong = getValue(value,',',4);
           //float fLong = (sLong.substring(0,2)).toFloat() + (sLong.substring(2,4)).toFloat() / 60.0f + (sLong.substring(4,9)).toFloat() / 60.0f;
 
-          String geo = "{\"latitude\":" + getValue(value,',',2) + ",\"longitude\":" + getValue(value,',',4) + ",\"altitude\":0}";
+          String sLat = getValue(value,',',2);
+          if(sLat == "")
+            sLat = "0";
+          String sLong = getValue(value,',',4);
+          if(sLong == "")
+            sLong = "0";
 
+          String geo = "{\"latitude\":\"" + sLat + "\",\"longitude\":\"" + sLong + "\",\"altitude\":\"0\"}";
+
+          Serial.println("#");
           Serial.println(geo);
+          Serial.println("#");
         }
       }
     }
     
-    delay(1000);
     clearBufferArray();
     count = 0;
   }
