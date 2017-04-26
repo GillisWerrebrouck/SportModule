@@ -2,6 +2,7 @@ var serialport = require("serialport"),
 	sqlhelper = require("./sql-helper"), 
 	dateTime = require('node-datetime');
 	
+// var serialPortName = "/dev/ttyUSB0";
 var serialPortName = "COM2";
 
 var serialPort = new serialport(serialPortName, {
