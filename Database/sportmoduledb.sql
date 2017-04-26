@@ -28,7 +28,9 @@ CREATE TABLE `geodata` (
   `geoId` varchar(80) NOT NULL,
   `routeId` varchar(80) NOT NULL,
   `latitude` decimal(10,7) DEFAULT NULL,
+  `latitudeDirection` char(1) NOT NULL,
   `longitude` decimal(10,7) DEFAULT NULL,
+  `longitudeDirection` char(1) NOT NULL,
   `altitude` decimal(10,7) DEFAULT NULL,
   `time` datetime NOT NULL,
   PRIMARY KEY (`geoId`,`routeId`),
@@ -65,4 +67,4 @@ CREATE TABLE `route` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-16 11:05:12
+-- Dump completed on 2017-04-27  0:36:43
