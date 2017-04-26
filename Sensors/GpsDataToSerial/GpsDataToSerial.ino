@@ -85,15 +85,25 @@ void checkGPS()
           String sLat = getValue(value,',',2);
           if(sLat == "")
             sLat = "0";
+          String sLatd = getValue(value,',',3);
+          
           String sLong = getValue(value,',',4);
           if(sLong == "")
             sLong = "0";
+          String sLongd = getValue(value,',',5);
+          
+          String sAlt = getValue(value,',',9);
+          if(sAlt == "")
+            sAlt = "0";
 
-          String geo = "{\"latitude\":\"" + sLat + "\",\"longitude\":\"" + sLong + "\",\"altitude\":\"0\"}";
+          String geo = "{\"latitude\":\"" + sLat + "\",\"latd\":\"" + sLatd + "\",\"longitude\":\"" + sLong + "\",\"longd\":\"" + sLongd + "\",\"altitude\":\"" + sAlt + "\"}";
 
           Serial.println("#");
+          delay(50);
           Serial.println(geo);
+          delay(50);
           Serial.println("#");
+          delay(50);
         }
       }
     }
