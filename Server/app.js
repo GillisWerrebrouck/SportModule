@@ -13,6 +13,7 @@ var serialPort = new serialport(serialPortName, {
 });
 
 var started = false;
+var sendingGeoData = false;
 var routeId = null;
 const uuidV1 = require('uuid/v1');
 
@@ -21,7 +22,10 @@ serialPort.on("open", function () {
 	serialPort.on("data", function(data) {
 		console.log("Serial data: " + data.toString());
 		
-		if(data.toString() == 1 && !started) {
+		if(data.toString() == "#")
+			sendingGeoData = !sendingGeoData;
+		
+		if(!sendingGeoData && data.toString() == 1 && !started) {
 			started = true;
 			
 			routeId = uuidV1();
@@ -33,7 +37,7 @@ serialPort.on("open", function () {
 			});
 		}
 		
-		if(data.toString() == 0 && started) {
+		if(!sendingGeoData && data.toString() == 0 && started) {
 			started = false;
 			
 			var dt = dateTime.create();
@@ -45,7 +49,7 @@ serialPort.on("open", function () {
 			});
 		}
 		
-		if(data.toString() != 0 && data.toString() != 1 && started){
+		if(sendingGeoData && data.toString() != 0 && data.toString() != 1 && started){
 			var geoJSON = JSON.parse(data.toString());
 			var geoId = uuidV1();
 			var dt = dateTime.create();
