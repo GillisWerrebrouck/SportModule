@@ -74,14 +74,19 @@ serialPort.on("open", function () {
 			var now = dt.format('Y-m-d H:M:S');
 			
 			var latVal, longVal, altVal = 0;
+			var latD, longD = "";
 			if(geoJSON["latitude"] != undefined && geoJSON["latitude"] != null && geoJSON["latitude"] != "" && geoJSON["latitude"] != "0")
 				latVal = parseFloat(geoJSON["latitude"].toString().substring(0,2)) + parseFloat(geoJSON["latitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["latitude"].toString().substring(4,9))/60;
 			if(geoJSON["longitude"] != undefined && geoJSON["longitude"] != null && geoJSON["longitude"] != "" && geoJSON["longitude"] != "0")
 				longVal = parseFloat(geoJSON["longitude"].toString().substring(0,2)) + parseFloat(geoJSON["longitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["longitude"].toString().substring(4,9))/60;
 			if(geoJSON["altitude"] != undefined && geoJSON["altitude"] != null)
 				altVal = parseFloat(geoJSON["altitude"].toString());
+			if(geoJSON["latd"] != undefined && geoJSON["latd"] != null)
+				latD = geoJSON["latd"];
+			if(geoJSON["longd"] != undefined && geoJSON["longd"] != null)
+				longD = geoJSON["longd"];
 
-			var geoData = {geoId: geoId, routeId: routeId, latitude: latVal, longitude: longVal, altitude: altVal, time: now};
+			var geoData = {geoId: geoId, routeId: routeId, latitude: latVal, latitudeDirection: latD, longitude: longVal, longitudeDirection: longD, altitude: altVal, time: now};
 				console.log(geoData);
 			sqlhelper.insert("geodata", geoData, function(data) {
 				console.log(data);

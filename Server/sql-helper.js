@@ -30,7 +30,7 @@ SQLHelper.prototype.select = function(table, callback) {
 SQLHelper.prototype.insert = function(table, data, callback) {
 	dbConnection.connect();
 	dbConnection.connection.query("INSERT into " + table + " SET ?", data, function(err, result) {
-		callback(result);
+		callback(err);
 	});
 	dbConnection.end();
 };
