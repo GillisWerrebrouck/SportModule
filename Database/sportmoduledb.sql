@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `geodata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `geodata` (
-  `geoId` varchar(80) NOT NULL,
-  `routeId` varchar(80) NOT NULL,
+  `geoId` varchar(40) NOT NULL,
+  `routeId` varchar(40) NOT NULL,
   `latitude` decimal(10,7) DEFAULT NULL,
   `latitudeDirection` char(1) NOT NULL,
   `longitude` decimal(10,7) DEFAULT NULL,
@@ -48,13 +48,33 @@ DROP TABLE IF EXISTS `route`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `route` (
-  `routeId` varchar(80) NOT NULL,
+  `routeId` varchar(40) NOT NULL,
   `startDate` datetime NOT NULL,
   `endDate` datetime DEFAULT NULL,
   PRIMARY KEY (`routeId`),
   UNIQUE KEY `routeId_UNIQUE` (`routeId`),
   UNIQUE KEY `startDate_UNIQUE` (`startDate`),
   UNIQUE KEY `endDate_UNIQUE` (`endDate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tphdata`
+--
+
+DROP TABLE IF EXISTS `tphdata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tphdata` (
+  `tphId` varchar(40) NOT NULL,
+  `routeId` varchar(40) NOT NULL,
+  `temperature` decimal(4,2) NOT NULL,
+  `pressure` decimal(6,2) NOT NULL,
+  `humidity` decimal(4,2) NOT NULL,
+  PRIMARY KEY (`tphId`),
+  UNIQUE KEY `tphId_UNIQUE` (`tphId`),
+  KEY `routeFK_idx` (`routeId`),
+  CONSTRAINT `routeId` FOREIGN KEY (`routeId`) REFERENCES `route` (`routeId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -67,4 +87,4 @@ CREATE TABLE `route` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-27  0:36:43
+-- Dump completed on 2017-05-02 16:12:15
