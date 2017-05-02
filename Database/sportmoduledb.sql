@@ -27,11 +27,11 @@ DROP TABLE IF EXISTS `geodata`;
 CREATE TABLE `geodata` (
   `geoId` varchar(40) NOT NULL,
   `routeId` varchar(40) NOT NULL,
-  `latitude` decimal(10,7) DEFAULT NULL,
+  `latitude` decimal(10,7) NOT NULL,
   `latitudeDirection` char(1) NOT NULL,
-  `longitude` decimal(10,7) DEFAULT NULL,
+  `longitude` decimal(10,7) NOT NULL,
   `longitudeDirection` char(1) NOT NULL,
-  `altitude` decimal(10,7) DEFAULT NULL,
+  `altitude` decimal(10,7) NOT NULL,
   `time` datetime NOT NULL,
   PRIMARY KEY (`geoId`,`routeId`),
   UNIQUE KEY `geoId_UNIQUE` (`geoId`,`routeId`),
@@ -67,14 +67,15 @@ DROP TABLE IF EXISTS `tphdata`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tphdata` (
   `tphId` varchar(40) NOT NULL,
-  `routeId` varchar(40) NOT NULL,
+  `geoId` varchar(40) NOT NULL,
   `temperature` decimal(4,2) NOT NULL,
   `pressure` decimal(6,2) NOT NULL,
   `humidity` decimal(4,2) NOT NULL,
+  `time` datetime NOT NULL,
   PRIMARY KEY (`tphId`),
   UNIQUE KEY `tphId_UNIQUE` (`tphId`),
-  KEY `routeFK_idx` (`routeId`),
-  CONSTRAINT `routeId` FOREIGN KEY (`routeId`) REFERENCES `route` (`routeId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `routeFK_idx` (`geoId`),
+  CONSTRAINT `geoId` FOREIGN KEY (`geoId`) REFERENCES `geodata` (`geoId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -87,4 +88,4 @@ CREATE TABLE `tphdata` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-02 16:12:15
+-- Dump completed on 2017-05-02 17:36:37
