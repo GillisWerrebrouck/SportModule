@@ -70,10 +70,11 @@ serialPort.on("open", function () {
 			}
 			currentGeoData = "";
 			var geoId = uuidV1();
+			var tphId = uuidV1();
 			var dt = dateTime.create();
 			var now = dt.format('Y-m-d H:M:S');
 			
-			var latVal, longVal, altVal = 0;
+			var latVal, longVal, altVal, temp, pres, hum = 0;
 			var latD, longD = "";
 			if(geoJSON["latitude"] != undefined && geoJSON["latitude"] != null && geoJSON["latitude"] != "" && geoJSON["latitude"] != "0")
 				latVal = parseFloat(geoJSON["latitude"].toString().substring(0,2)) + parseFloat(geoJSON["latitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["latitude"].toString().substring(4,9))/60;
@@ -85,13 +86,25 @@ serialPort.on("open", function () {
 				latD = geoJSON["latd"];
 			if(geoJSON["longd"] != undefined && geoJSON["longd"] != null)
 				longD = geoJSON["longd"];
-
-			if(latVal == undefined || longVal == undefined)
-				return;
+			
+			if(geoJSON["T"] != undefined && geoJSON["T"] != null)
+				temp = geoJSON["T"];
+			if(geoJSON["P"] != undefined && geoJSON["P"] != null)
+				pres = geoJSON["P"];
+			if(geoJSON["H"] != undefined && geoJSON["H"] != null)
+				hum = geoJSON["H"];
 
 			var geoData = {geoId: geoId, routeId: routeId, latitude: latVal, latitudeDirection: latD, longitude: longVal, longitudeDirection: longD, altitude: altVal, time: now};
-				console.log(geoData);
+			console.log(geoData);
+			
+			var tphData = {tphId: tphId, geoId: geoId, temperature: temp, pressure: pres, humidity: hum, time: now};
+			console.log(tphData);
+			
 			sqlhelper.insert("geodata", geoData, function(data) {
+				console.log(data);
+			});
+			
+			sqlhelper.insert("tphdata", tphData, function(data) {
 				console.log(data);
 			});
 		}
