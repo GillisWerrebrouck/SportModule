@@ -1,5 +1,25 @@
+/*--- GROVE GPS ---*/
 #include <SoftwareSerial.h>
+/*-----------------*/
+
+/*--- TPH V2 ---*/
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+/*--------------*/
+
+/*--- GROVE BUTTON ---*/
 #define BUTTON_PIN 20
+/*--------------------*/
+
+/*--- TPH V2 ---*/
+#define BME_SCK 13
+#define BME_MISO 12
+#define BME_MOSI 11
+#define BME_CS 10
+#define SEALEVELPRESSURE_HPA (1013.25)
+/*--------------*/
 
 SoftwareSerial SoftSerial(2, 3);
 char buffer[256];
@@ -7,10 +27,20 @@ int count=0;
 boolean routeStarted = false;
 
 unsigned long interval = 1000; // the time we need to wait
-unsigned long previousMillis = 0; // millis() returns an unsigned long.
+unsigned long previousMillisTPHv2 = 0;
+unsigned long previousMillisGPS = 0;
+
+boolean previousButtonState = false;
+
+Adafruit_BME280 bme;
+
+float currentTemperature;
+float currentPressure;
+float currentHumidity;
 
 void setup()
 {
+  bme.begin();
   SoftSerial.begin(9600);
   Serial.begin(9600);
   pinMode(BUTTON_PIN, INPUT);
@@ -23,14 +53,19 @@ void loop()
   unsigned long currentMillis = millis(); // grab current time
 
   // check if "interval" time has passed (1000 milliseconds)
-  if ((unsigned long)(currentMillis - previousMillis) >= interval) {
+  if ((unsigned long)(currentMillis - previousMillisTPHv2) >= 200) {
+    checkTPHv2();
+    // save the "current" time
+    previousMillisTPHv2 = millis();
+  }
+
+  // check if "interval" time has passed (1000 milliseconds)
+  if ((unsigned long)(currentMillis - previousMillisGPS) >= interval) {
     checkGPS();
     // save the "current" time
-    previousMillis = millis();
+    previousMillisGPS = millis();
   }
 }
-
-boolean previousButtonState = false;
 
 void checkButton()
 {
@@ -44,6 +79,13 @@ void checkButton()
   }
 
   previousButtonState = currentButtonState;
+}
+
+void checkTPHv2()
+{
+  currentTemperature = bme.readTemperature();
+  currentPressure = bme.readPressure() / 100.0F;
+  currentHumidity = bme.readHumidity();
 }
 
 void checkGPS()
@@ -96,7 +138,7 @@ void checkGPS()
           if(sAlt == "")
             sAlt = "0";
 
-          String geo = "{\"latitude\":\"" + sLat + "\",\"latd\":\"" + sLatd + "\",\"longitude\":\"" + sLong + "\",\"longd\":\"" + sLongd + "\",\"altitude\":\"" + sAlt + "\"}";
+          String geo = "{\"latitude\":" + sLat + ",\"latd\":" + sLatd + ",\"longitude\":" + sLong + ",\"longd\":" + sLongd + ",\"altitude\":" + sAlt + ",\"T\":" + currentTemperature + ",\"P\":" + currentPressure + ",\"H\":" + currentHumidity + "}";
 
           Serial.println("#");
           delay(50);
