@@ -138,11 +138,11 @@ void checkGPS()
           if(sAlt == "")
             sAlt = "0";
 
-          String geo = "{\"latitude\":" + sLat + ",\"latd\":" + sLatd + ",\"longitude\":" + sLong + ",\"longd\":" + sLongd + ",\"altitude\":" + sAlt + ",\"T\":" + currentTemperature + ",\"P\":" + currentPressure + ",\"H\":" + currentHumidity + "}";
+          String data = "{\"latitude\":\"" + sLat + "\",\"latd\":\"" + sLatd + "\",\"longitude\":\"" + sLong + "\",\"longd\":\"" + sLongd + "\",\"altitude\":\"" + sAlt + "\",\"T\":\"" + currentTemperature + "\",\"P\":\"" + currentPressure + "\",\"H\":\"" + currentHumidity + "\"}";
 
           Serial.println("#");
           delay(50);
-          Serial.println(geo);
+          Serial.println(data);
           delay(50);
           Serial.println("#");
           delay(50);
