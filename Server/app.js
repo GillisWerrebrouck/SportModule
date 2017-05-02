@@ -74,7 +74,7 @@ serialPort.on("open", function () {
 			var dt = dateTime.create();
 			var now = dt.format('Y-m-d H:M:S');
 			
-			var latVal, longVal, altVal, temp, pres, hum = 0;
+			var latVal, longVal, altVal, temp, pres, hum = 5000.4000;
 			var latD, longD = "";
 			if(geoJSON["latitude"] != undefined && geoJSON["latitude"] != null && geoJSON["latitude"] != "" && geoJSON["latitude"] != "0")
 				latVal = parseFloat(geoJSON["latitude"].toString().substring(0,2)) + parseFloat(geoJSON["latitude"].toString().substring(2,4))/60 + parseFloat(geoJSON["latitude"].toString().substring(4,9))/60;
@@ -94,6 +94,9 @@ serialPort.on("open", function () {
 			if(geoJSON["H"] != undefined && geoJSON["H"] != null)
 				hum = geoJSON["H"];
 
+			if (latVal == undefined || longVal == undefined)
+				return;
+
 			var geoData = {geoId: geoId, routeId: routeId, latitude: latVal, latitudeDirection: latD, longitude: longVal, longitudeDirection: longD, altitude: altVal, time: now};
 			console.log(geoData);
 			
@@ -102,10 +105,11 @@ serialPort.on("open", function () {
 			
 			sqlhelper.insert("geodata", geoData, function(data) {
 				console.log(data);
-			});
+
 			
-			sqlhelper.insert("tphdata", tphData, function(data) {
-				console.log(data);
+				sqlhelper.insert("tphdata", tphData, function(data) {
+					console.log(data);
+				});
 			});
 		}
 	});
