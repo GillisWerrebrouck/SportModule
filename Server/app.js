@@ -106,7 +106,6 @@ serialPort.on("open", function () {
 			sqlhelper.insert("geodata", geoData, function(data) {
 				console.log(data);
 
-			
 				sqlhelper.insert("tphdata", tphData, function(data) {
 					console.log(data);
 				});
