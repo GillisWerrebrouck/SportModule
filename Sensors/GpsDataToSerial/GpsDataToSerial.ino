@@ -26,11 +26,18 @@ char buffer[256];
 int count=0;
 boolean routeStarted = false;
 
-unsigned long interval = 1000; // the time we need to wait
+unsigned long ledInterval = 300;
+unsigned long tphInterval = 1000;
+unsigned long gpsInterval = 1000;
+unsigned long previousMillisLED = 0;
 unsigned long previousMillisTPHv2 = 0;
 unsigned long previousMillisGPS = 0;
 
 boolean previousButtonState = false;
+boolean bLed1State = false;
+boolean bLed1 = false;
+boolean bLed2State = false;
+boolean bLed2 = false;
 
 Adafruit_BME280 bme;
 
@@ -40,6 +47,12 @@ float currentHumidity;
 
 void setup()
 {
+  pinMode(LED1, OUTPUT);
+  digitalWrite(LED1, LOW);
+  bLed1 = true;
+  pinMode(LED2, OUTPUT);
+  digitalWrite(LED2, LOW);
+  
   bme.begin();
   SoftSerial.begin(9600);
   Serial.begin(9600);
@@ -50,19 +63,20 @@ void loop()
 {
   checkButton();
   
-  unsigned long currentMillis = millis(); // grab current time
-
-  // check if "interval" time has passed (1000 milliseconds)
-  if ((unsigned long)(currentMillis - previousMillisTPHv2) >= 200) {
+  unsigned long currentMillis = millis();
+  
+  if ((unsigned long)(currentMillis - previousMillisLED) >= ledInterval) {
+    setLed(2);
+    previousMillisLED = millis();
+  }
+  
+  if ((unsigned long)(currentMillis - previousMillisTPHv2) >= tphInterval) {
     checkTPHv2();
-    // save the "current" time
     previousMillisTPHv2 = millis();
   }
 
-  // check if "interval" time has passed (1000 milliseconds)
-  if ((unsigned long)(currentMillis - previousMillisGPS) >= interval) {
+  if ((unsigned long)(currentMillis - previousMillisGPS) >= gpsInterval) {
     checkGPS();
-    // save the "current" time
     previousMillisGPS = millis();
   }
 }
@@ -79,6 +93,35 @@ void checkButton()
   }
 
   previousButtonState = currentButtonState;
+}
+
+void setLed(int led)
+{
+  if(led == 1 && bLed1)
+  {
+      bLed1State = !bLed1State;
+      if(bLed1State)
+        digitalWrite(LED1, HIGH);
+      else
+        digitalWrite(LED1, LOW);
+  }
+  else
+  {
+    digitalWrite(LED1, LOW);
+  }
+  
+  if(led == 2 && bLed2)
+  {
+      bLed2State = !bLed2State;
+      if(bLed2State)
+        digitalWrite(LED2, HIGH);
+      else
+        digitalWrite(LED2, LOW);
+  }
+  else
+  {
+    digitalWrite(LED2, LOW);
+  }
 }
 
 void checkTPHv2()
@@ -119,11 +162,6 @@ void checkGPS()
             value += current;
           }
           
-          //String sLat = getValue(value,',',2);
-          //float fLat = (sLat.substring(0,2)).toFloat() + (sLat.substring(2,4)).toFloat() / 60.0f + (sLat.substring(4,9)).toFloat() / 60.0f;
-          //String sLong = getValue(value,',',4);
-          //float fLong = (sLong.substring(0,2)).toFloat() + (sLong.substring(2,4)).toFloat() / 60.0f + (sLong.substring(4,9)).toFloat() / 60.0f;
-
           String sLat = getValue(value,',',2);
           if(sLat == "")
             sLat = "0";
@@ -138,14 +176,27 @@ void checkGPS()
           if(sAlt == "")
             sAlt = "0";
 
+          if(sLat == "0" || sLong == "0")
+          {
+            bLed1 = true;
+            setLed(1);
+            bLed1State = false;
+            bLed2 = false;
+          }
+          else
+          {
+            bLed1 = false;
+            bLed2 = true;
+          }
+
           String data = "{\"latitude\":\"" + sLat + "\",\"latd\":\"" + sLatd + "\",\"longitude\":\"" + sLong + "\",\"longd\":\"" + sLongd + "\",\"altitude\":\"" + sAlt + "\",\"T\":\"" + currentTemperature + "\",\"P\":\"" + currentPressure + "\",\"H\":\"" + currentHumidity + "\"}";
 
           Serial.println("#");
-          delay(50);
+          delay(25);
           Serial.println(data);
-          delay(50);
+          delay(100);
           Serial.println("#");
-          delay(50);
+          delay(25);
         }
       }
     }
