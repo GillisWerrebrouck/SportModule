@@ -4,7 +4,7 @@ dbConnection = {
 	connection: null,
 	connect: function(){
 		this.connection = mysql.createConnection({
-			host     : "localhost",
+			host     : "127.0.0.2",
 			user     : "root",
 			password : "pass123",
 			database : "sportmoduledb"
