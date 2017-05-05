@@ -100,15 +100,15 @@ serialPort.on("open", function () {
 			var geoData = {geoId: geoId, routeId: routeId, latitude: latVal, latitudeDirection: latD, longitude: longVal, longitudeDirection: longD, altitude: altVal, time: now};
 			console.log(geoData);
 			
-			var tphData = {tphId: tphId, geoId: geoId, temperature: temp, pressure: pres, humidity: hum, time: now};
+			var tphData = {tphId: tphId, routeId: routeId, temperature: temp, pressure: pres, humidity: hum, time: now};
 			console.log(tphData);
 			
 			sqlhelper.insert("geodata", geoData, function(data) {
 				console.log(data);
+			});
 
-				sqlhelper.insert("tphdata", tphData, function(data) {
-					console.log(data);
-				});
+			sqlhelper.insert("tphdata", tphData, function(data) {
+				console.log(data);
 			});
 		}
 	});

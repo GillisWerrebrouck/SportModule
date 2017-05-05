@@ -22,7 +22,24 @@ function SQLHelper() {};
 SQLHelper.prototype.select = function(table, callback) {
 	dbConnection.connect();
 	dbConnection.connection.query("SELECT * FROM " + table, function(err, rows, fields) {
-		callback(rows);
+		callback(err, rows);
+	});
+	dbConnection.end();
+};
+
+SQLHelper.prototype.select = function(table, conditions, callback) {	
+	var stmt = "SELECT * FROM " + table + " WHERE ";
+	for(var c in conditions) {
+		stmt += c + " = ? ";
+		if(c.next)
+			stmt += ", ";
+	}
+	
+	stmt = stmt.replace(/ +/g, ' ');
+	
+	dbConnection.connect();
+	dbConnection.connection.query(stmt, conditions, function(err, rows, fields) {
+		callback(err, rows);
 	});
 	dbConnection.end();
 };
@@ -35,7 +52,7 @@ SQLHelper.prototype.insert = function(table, data, callback) {
 	dbConnection.end();
 };
 
-SQLHelper.prototype.update = function(table, data, condition, callback) {
+SQLHelper.prototype.update = function(table, data, conditions, callback) {
 	var stmt = "UPDATE " + table + " SET ";
 	var values = [];
 	
@@ -45,9 +62,9 @@ SQLHelper.prototype.update = function(table, data, condition, callback) {
 	}
 	
 	stmt += " WHERE ";
-	for(var c in condition) {
+	for(var c in conditions) {
 		stmt += c + " = ? ";
-		values.push(condition[c]);
+		values.push(conditions[c]);
 		if(c.next)
 			stmt += ", ";
 	}
