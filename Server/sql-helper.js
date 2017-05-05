@@ -19,26 +19,28 @@ dbConnection = {
 
 function SQLHelper() {};
 
-SQLHelper.prototype.select = function(table, callback) {
+SQLHelper.prototype.selectAll = function(table, callback) {
 	dbConnection.connect();
-	dbConnection.connection.query("SELECT * FROM " + table, function(err, rows, fields) {
+	dbConnection.connection.query("SELECT * FROM " + table, function(err, rows) {
 		callback(err, rows);
 	});
 	dbConnection.end();
 };
 
-SQLHelper.prototype.select = function(table, conditions, callback) {	
+SQLHelper.prototype.select = function(table, conditions, callback) {
 	var stmt = "SELECT * FROM " + table + " WHERE ";
+	var values = [];
 	for(var c in conditions) {
 		stmt += c + " = ? ";
+		values.push(conditions[c]);
 		if(c.next)
 			stmt += ", ";
 	}
 	
 	stmt = stmt.replace(/ +/g, ' ');
-	
+
 	dbConnection.connect();
-	dbConnection.connection.query(stmt, conditions, function(err, rows, fields) {
+	dbConnection.connection.query(stmt, values, function(err, rows) {
 		callback(err, rows);
 	});
 	dbConnection.end();

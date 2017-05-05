@@ -9,36 +9,37 @@ router.get('/', function (req, res) {
     res.send({ message: "This is the api endpoint for the sportmodule"});
 });
 
-router.get('/routes', function (req, res) {
-	sqlhelper.select("route", function(err, rows) {		
-		if(err) {
-            res.json({"Message" : "Error executing MySQL query"});
+router.get('/route', function (req, res) {
+    sqlhelper.selectAll("route", function(err, rows) {		
+	if(err) {
+	    console.log(err);
+            res.json({"Message" : "Error executing MySQL query1"});
         } else {
             res.json(rows);
         }
-	});
+    });
 });
 
 router.get('/geo/:routeId', function (req, res) {
-	var condition = {routeId: req.params.routeId};
-	sqlhelper.select("geodata", condition, function(err, rows) {		
-		if(err) {
+    var condition = {routeId: req.params.routeId};
+    sqlhelper.select("geodata", condition, function(err, rows) {		
+        if(err) {
             res.json({"Message" : "Error executing MySQL query"});
         } else {
             res.json(rows);
         }
-	});
+    });
 });
 
 router.get('/tph/:routeId', function (req, res) {
-	var condition = {routeId: req.params.routeId};
-	sqlhelper.select("tphdata", condition, function(err, rows) {		
-		if(err) {
+    var condition = {routeId: req.params.routeId};
+    sqlhelper.select("tphdata", condition, function(err, rows) {		
+        if(err) {
             res.json({"Message" : "Error executing MySQL query"});
         } else {
             res.json(rows);
         }
-	});
+    });
 });
 
 // prefix route with /api
