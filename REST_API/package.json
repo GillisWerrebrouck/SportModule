@@ -1,0 +1,24 @@
+{
+  "name": "rest_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GillisWerrebrouck/SportModule.git"
+  },
+  "author": "Gillis Werrebrouck",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GillisWerrebrouck/SportModule/issues"
+  },
+  "homepage": "https://github.com/GillisWerrebrouck/SportModule#readme",
+  "author": "Gillis Werrebrouck",
+  "dependencies": {
+    "express": "^4.15.2",
+    "mysql": "^2.13.0"
+  }
+}
