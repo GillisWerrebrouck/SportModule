@@ -1,7 +1,7 @@
 var express = require("express"),
     router  = express.Router(),
     app     = express(),
-	sqlhelper = require("./sql-helper"), 
+    sqlhelper = require("./sql-helper"),
     port    = 3000;
 
 //routes
@@ -10,12 +10,12 @@ router.get('/', function (req, res) {
 });
 
 router.get('/route', function (req, res) {
+    res.header("Access-Controll-Allow-Origin", "*");
     sqlhelper.selectAll("route", function(err, rows) {		
 	if(err) {
-	    console.log(err);
-            res.json({"Message" : "Error executing MySQL query1"});
+            res.jsonp({"Message" : "Error executing MySQL query1"});
         } else {
-            res.json(rows);
+            res.jsonp(rows);
         }
     });
 });
@@ -24,9 +24,9 @@ router.get('/geo/:routeId', function (req, res) {
     var condition = {routeId: req.params.routeId};
     sqlhelper.select("geodata", condition, function(err, rows) {		
         if(err) {
-            res.json({"Message" : "Error executing MySQL query"});
+            res.jsonp({"Message" : "Error executing MySQL query"});
         } else {
-            res.json(rows);
+            res.jsonp(rows);
         }
     });
 });
@@ -35,9 +35,9 @@ router.get('/tph/:routeId', function (req, res) {
     var condition = {routeId: req.params.routeId};
     sqlhelper.select("tphdata", condition, function(err, rows) {		
         if(err) {
-            res.json({"Message" : "Error executing MySQL query"});
+            res.jsonp({"Message" : "Error executing MySQL query"});
         } else {
-            res.json(rows);
+            res.jsonp(rows);
         }
     });
 });
