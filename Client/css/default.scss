@@ -1,0 +1,88 @@
+$primary-color: #4527A0;
+$toolbar_height: 64px;
+$color-black: "0,0,0";
+$color-white: "255,255,255";
+$select-background-color: transparent;
+$select-border-color: unquote("rgba(#{$color-white}, 0.95)") !default;
+$select-color: unquote("rgba(#{$color-white}, 0.95)") !default;
+$option-color: unquote("rgba(#{$color-black}, 0.95)") !default;
+
+header {
+  height: $toolbar_height;
+  width: 100%;
+  background-color: $primary-color;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  h1 {
+    margin: 18px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.6em;
+    color: #FFF;
+  }
+
+  #routes {
+    z-index: 1;
+  }
+
+  #filter {
+    select {
+      background-color: $select-background-color;
+      padding: 4px 0;
+      margin: 8px;
+      font-size: 1em;
+      color: $select-color;
+      border: none;
+      border-bottom: 1px solid $select-border-color;
+    }
+
+    option {
+      color: $option-color;
+    }
+
+    select:focus {
+      outline: none
+    }
+
+    /* Hide label */
+    .mdl-selectfield label {
+      display: none;
+    }
+    /* Use custom arrow */
+    .mdl-selectfield select {
+      appearance: none
+    }
+    .mdl-selectfield {
+      position: relative;
+      &:after {
+        position: absolute;
+        top: 0.75em;
+        right: 0.5em;
+        /* Styling the down arrow */
+        width: 0;
+        height: 0;
+        padding: 0;
+        content: '';
+        border-left: .25em solid transparent;
+        border-right: .25em solid transparent;
+        border-top: .375em solid $select-border-color;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+main {
+  position: absolute;
+  top: $toolbar_height;
+  left: 0;
+  height: calc(100% - #{$toolbar_height});
+  width: 100vw;
+  z-index: -1;
+  #map {
+    height: 100%;
+    width: 100%;
+  }
+}

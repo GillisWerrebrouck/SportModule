@@ -5,12 +5,15 @@ document.addEventListener("DOMContentLoaded", function () {
 let nsSportModule = {
     base: "http://192.168.0.128:3000/api/",
     routesElement: null,
+    optionsElement: null,
     selectedRoute: "",
+    routes: null,
     geoData: null,
     tphData: null,
     mapElement: null,
     map: null,
-    showTph: true,
+    showSpeed: true,
+    showTph: false,
 
     init: function () {
         this.getRoutes();
@@ -23,7 +26,8 @@ let nsSportModule = {
                 url: this.base + "route",
                 dataType: "jsonp",
                 success: function (data) {
-                    nsSportModule.showRoutes(data);
+                    nsSportModule.routes = data;
+                    nsSportModule.showRoutes();
                 },
                 error: function (jqXHR, text, errorThrown) {
                     console.log(jqXHR + " " + text + " " + errorThrown);
@@ -32,14 +36,15 @@ let nsSportModule = {
         );
     },
 
-    showRoutes: function (routes) {
+    showRoutes: function () {
         this.routesElement = document.getElementById("routes");
+        this.optionsElement = document.getElementById("options");
 
-        for (route in routes) {
-            route = routes[route];
+        for (route in nsSportModule.routes) {
+            route = nsSportModule.routes[route];
             let optionElem = document.createElement("option");
             optionElem.value = route["routeId"];
-            optionElem.text = route["startDate"] + " - " + route["endDate"];
+            optionElem.text = nsSportModule.formatDatetime(route["startDate"]) + " - " + nsSportModule.formatDatetime(route["endDate"]);
 
             this.routesElement.appendChild(optionElem);
         }
@@ -47,6 +52,22 @@ let nsSportModule = {
         this.routesElement.addEventListener("change", function () {
             if (nsSportModule.routesElement.selectedIndex == 0) return;
             nsSportModule.getGeoData(nsSportModule.routesElement.options[nsSportModule.routesElement.selectedIndex].value);
+        });
+
+        this.optionsElement.addEventListener("change", function () {
+            switch (nsSportModule.optionsElement.selectedIndex) {
+                case 0:
+                    nsSportModule.showSpeed = true;
+                    nsSportModule.showTph = false;
+                    break;
+                case 1:
+
+                    nsSportModule.showSpeed = false;
+                    nsSportModule.showTph = true;
+                    break;
+            }
+            if (nsSportModule.routesElement.selectedIndex == 0) return;
+            nsSportModule.showMap();
         });
     },
 
@@ -62,24 +83,20 @@ let nsSportModule = {
                 success: function (data) {
                     nsSportModule.geoData = data;
 
-                    if (nsSportModule.showTph) {
-                        $.ajax(
-                            {
-                                type: "GET",
-                                url: nsSportModule.base + "tph/" + nsSportModule.selectedRoute,
-                                dataType: "jsonp",
-                                success: function (data) {
-                                    nsSportModule.tphData = data;
-                                    nsSportModule.showMap();
-                                },
-                                error: function (jqXHR, text, errorThrown) {
-                                    console.log(jqXHR + " " + text + " " + errorThrown);
-                                }
+                    $.ajax(
+                        {
+                            type: "GET",
+                            url: nsSportModule.base + "tph/" + nsSportModule.selectedRoute,
+                            dataType: "jsonp",
+                            success: function (data) {
+                                nsSportModule.tphData = data;
+                                nsSportModule.showMap();
+                            },
+                            error: function (jqXHR, text, errorThrown) {
+                                console.log(jqXHR + " " + text + " " + errorThrown);
                             }
-                        );
-                    } else {
-                        nsSportModule.showMap();
-                    }
+                        }
+                    );
                 },
                 error: function (jqXHR, text, errorThrown) {
                     console.log(jqXHR + " " + text + " " + errorThrown);
@@ -156,23 +173,20 @@ let nsSportModule = {
 
                 let color;
 
-                // get distance, time and kmph from points
                 if (des == undefined) return;
 
-                if (nsSportModule.showTph) {
-                    let temp = nsSportModule.tphData[i].temperature;
-                    color = getColor(nsSportModule.mapValue(temp, 10, 30, 0, 1));
-                } else {
+                if (nsSportModule.showSpeed) {
+                    // get distance, time and kmph from points
                     let distance = nsSportModule.getDistanceBetweenCoordsInKm(src.lat(), src.lng(), des.lat(), des.lng());
                     let time = nsSportModule.getTimeFromDates(lat_lng_nomaps[i][2], lat_lng_nomaps[i + 1][2]);
                     let kmh = distance / time;
-                    let colorPct = 1;
 
-                    if (kmh < 35 && kmh > 0) {
-                        colorPct = kmh / 35;
-                    }
-
-                    color = getColor(colorPct);
+                    color = nsSportModule.getColor(nsSportModule.mapValue(kmh, 0, 35, 0, 1));
+                } else if (nsSportModule.showTph) {
+                    let temp = nsSportModule.tphData[i].temperature;
+                    color = nsSportModule.getColor(nsSportModule.mapValue(temp, 18, 30, 0, 1));
+                } else {
+                    return;
                 }
 
                 // set line properties
@@ -182,17 +196,9 @@ let nsSportModule = {
                     strokeWeight: 3,
                     path: path,
                     map: nsSportModule.map
-                }
+                };
                 poly = new google.maps.Polyline(polyOptions);
             }
-        }
-
-        function getColor(pct) {
-            let r = Math.round((255 * pct) / 1);
-            let g = Math.round((255 * (1 - pct)) / 1);
-            let b = 0;
-
-            return 'rgb(' + [r, g, b].join(',') + ')';
         }
     },
 
@@ -223,7 +229,17 @@ let nsSportModule = {
         return diffInHours;
     },
 
+    formatDatetime: function (datetime) {
+        let d = new Date(datetime);
+        return d.toLocaleString();
+    },
+
+    getColor: function (pct) {
+        var hue = ((1 - pct) * 120).toString(10);
+        return ["hsl(", hue, ",100%,50%)"].join("");
+    },
+
     mapValue: function (value, in_min, in_max, out_min, out_max) {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
-}
+};

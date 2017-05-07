@@ -6,20 +6,31 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SportModule</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./css/reset.css">
     <link rel="stylesheet" type="text/css" href="./css/default.css">
 </head>
 <body>
+<header>
+    <h1>Sport Module</h1>
+    <div id="filter">
+        <select id="routes">
+            <option>Select a route</option>
+        </select>
+        <select id="options">
+            <option>Speed</option>
+            <option>Temperature</option>
+            <option>Air pressure</option>
+            <option>Humidity</option>
+        </select>
+    </div>
+</header>
 <main>
-    <select id="routes">
-        <option>Select a route</option>
-    </select>
-
     <div id="map"></div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFG1FSAkQNEgEOTGFwUberI-K-nyG2XoA"
-        type="text/javascript"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFG1FSAkQNEgEOTGFwUberI-K-nyG2XoA"></script>
 <script src="./js/default.js"></script>
 </body>
 </html>
