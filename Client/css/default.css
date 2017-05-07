@@ -1,3 +1,6 @@
+body {
+  font-family: 'Roboto', sans-serif; }
+
 header {
   height: 64px;
   width: 100%;
@@ -8,9 +11,10 @@ header {
   justify-content: space-between; }
   header h1 {
     margin: 18px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.6em;
-    color: #FFF; }
+    font-size: 1.6em; }
+    header h1 a {
+      color: #FFF;
+      text-decoration: none; }
   header #routes {
     z-index: 1; }
   header #filter {
@@ -54,7 +58,17 @@ main {
   left: 0;
   height: calc(100% - 64px);
   width: 100vw;
-  z-index: -1; }
+  z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F8F8F8; }
+  main #info {
+    position: absolute;
+    padding: 8px;
+    border-bottom: 2px solid #000; }
+    main #info h2 {
+      font-size: 1.2em; }
   main #map {
     height: 100%;
     width: 100%; }

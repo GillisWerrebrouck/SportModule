@@ -7,6 +7,10 @@ $select-border-color: unquote("rgba(#{$color-white}, 0.95)") !default;
 $select-color: unquote("rgba(#{$color-white}, 0.95)") !default;
 $option-color: unquote("rgba(#{$color-black}, 0.95)") !default;
 
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 header {
   height: $toolbar_height;
   width: 100%;
@@ -18,9 +22,12 @@ header {
 
   h1 {
     margin: 18px;
-    font-family: 'Roboto', sans-serif;
     font-size: 1.6em;
-    color: #FFF;
+
+    a {
+      color: #FFF;
+      text-decoration: none;
+    }
   }
 
   #routes {
@@ -81,6 +88,21 @@ main {
   height: calc(100% - #{$toolbar_height});
   width: 100vw;
   z-index: -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F8F8F8;
+
+  #info {
+    position: absolute;
+    padding: 8px;
+    border-bottom: 2px solid #000;
+
+    h2 {
+      font-size:  1.2em;
+    }
+  }
+
   #map {
     height: 100%;
     width: 100%;

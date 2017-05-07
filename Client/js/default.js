@@ -6,6 +6,7 @@ let nsSportModule = {
     base: "http://192.168.0.128:3000/api/",
     routesElement: null,
     optionsElement: null,
+    isFirstRouteOptionRemoved: false,
     selectedRoute: "",
     routes: null,
     geoData: null,
@@ -51,6 +52,13 @@ let nsSportModule = {
 
         this.routesElement.addEventListener("change", function () {
             if (nsSportModule.routesElement.selectedIndex == 0) return;
+
+            if(!nsSportModule.isFirstRouteOptionRemoved){
+                let elem = document.querySelector("#routes>option:first-child");
+                elem.parentNode.removeChild(elem);
+                nsSportModule.isFirstRouteOptionRemoved = true;
+            }
+
             nsSportModule.getGeoData(nsSportModule.routesElement.options[nsSportModule.routesElement.selectedIndex].value);
         });
 
