@@ -42,6 +42,8 @@ header {
   }
 
   #filter {
+    margin-right: 10px;
+
     @include tablet {
       display: flex;
       flex-direction: column;

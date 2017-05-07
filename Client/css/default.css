@@ -18,6 +18,7 @@ header {
   header #routes {
     z-index: 1; }
   header #filter {
+    margin-right: 10px;
     /* Hide label */
     /* Use custom arrow */ }
     @media (max-width: 768px) {
