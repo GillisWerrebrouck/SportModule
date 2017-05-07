@@ -145,6 +145,13 @@ let nsSportModule = {
                     map: nsSportModule.map,
                     icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
                 });
+
+                (function (marker, data) {
+                    google.maps.event.addListener(marker, "click", function (e) {
+                        infoWindow.setContent("Start");
+                        infoWindow.open(nsSportModule.map, marker);
+                    });
+                })(marker, data);
             }
             if (i == nsSportModule.geoData.length - 1) {
                 marker = new google.maps.Marker({
@@ -152,17 +159,17 @@ let nsSportModule = {
                     map: nsSportModule.map,
                     icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
                 });
+
+                (function (marker, data) {
+                    google.maps.event.addListener(marker, "click", function (e) {
+                        infoWindow.setContent("End");
+                        infoWindow.open(nsSportModule.map, marker);
+                    });
+                })(marker, data);
             }
 
             if (!isNaN(marker.position.lat()) && !isNaN(marker.position.lng()))
                 latlngbounds.extend(marker.position);
-
-            (function (marker, data) {
-                google.maps.event.addListener(marker, "click", function (e) {
-                    infoWindow.setContent(data.title);
-                    infoWindow.open(nsSportModule.map, marker);
-                });
-            })(marker, data);
         }
         nsSportModule.map.setCenter(latlngbounds.getCenter());
         nsSportModule.map.fitBounds(latlngbounds);
