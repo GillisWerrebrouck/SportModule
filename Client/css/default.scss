@@ -6,6 +6,13 @@ $select-background-color: transparent;
 $select-border-color: unquote("rgba(#{$color-white}, 0.95)") !default;
 $select-color: unquote("rgba(#{$color-white}, 0.95)") !default;
 $option-color: unquote("rgba(#{$color-black}, 0.95)") !default;
+$tablet: 768px;
+
+@mixin tablet {
+  @media (max-width: #{$tablet}) {
+    @content;
+  }
+}
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -35,14 +42,25 @@ header {
   }
 
   #filter {
+    @include tablet {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-around;
+    }
+
     select {
       background-color: $select-background-color;
       padding: 4px 0;
       margin: 8px;
-      font-size: 1em;
+      font-size: 0.9em;
       color: $select-color;
       border: none;
       border-bottom: 1px solid $select-border-color;
+
+      @include tablet {
+        margin: 0 8px 0 0;
+      }
     }
 
     option {
@@ -99,7 +117,7 @@ main {
     border-bottom: 2px solid #000;
 
     h2 {
-      font-size:  1.2em;
+      font-size: 1.2em;
     }
   }
 

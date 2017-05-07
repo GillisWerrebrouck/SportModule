@@ -20,14 +20,23 @@ header {
   header #filter {
     /* Hide label */
     /* Use custom arrow */ }
+    @media (max-width: 768px) {
+      header #filter {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: space-around; } }
     header #filter select {
       background-color: transparent;
       padding: 4px 0;
       margin: 8px;
-      font-size: 1em;
+      font-size: 0.9em;
       color: rgba(255,255,255, 0.95);
       border: none;
       border-bottom: 1px solid rgba(255,255,255, 0.95); }
+      @media (max-width: 768px) {
+        header #filter select {
+          margin: 0 8px 0 0; } }
     header #filter option {
       color: rgba(0,0,0, 0.95); }
     header #filter select:focus {
