@@ -11,6 +11,12 @@ let nsSportModule = {
     routes: null,
     geoData: null,
     tphData: null,
+    totalDistance: 0,
+    totalTime: 0,
+    avgSpeed: 0,
+    minTemp: 0,
+    maxTemp: 0,
+    avgTemp: 0,
     mapElement: null,
     map: null,
     showSpeed: true,
@@ -51,9 +57,9 @@ let nsSportModule = {
         }
 
         this.routesElement.addEventListener("change", function () {
-            if (nsSportModule.routesElement.selectedIndex == 0) return;
+            if (nsSportModule.routesElement.selectedIndex == 0 && !nsSportModule.isFirstRouteOptionRemoved) return;
 
-            if(!nsSportModule.isFirstRouteOptionRemoved){
+            if (!nsSportModule.isFirstRouteOptionRemoved) {
                 let elem = document.querySelector("#routes>option:first-child");
                 elem.parentNode.removeChild(elem);
                 nsSportModule.isFirstRouteOptionRemoved = true;
@@ -74,7 +80,7 @@ let nsSportModule = {
                     nsSportModule.showTph = true;
                     break;
             }
-            if (nsSportModule.routesElement.selectedIndex == 0) return;
+            if (!nsSportModule.isFirstRouteOptionRemoved) return;
             nsSportModule.showMap();
         });
     },
@@ -188,12 +194,16 @@ let nsSportModule = {
 
                 let color;
 
-                if (des == undefined) return;
+                if (des == undefined) break;
 
                 if (nsSportModule.showSpeed) {
                     // get distance, time and kmph from points
                     let distance = nsSportModule.getDistanceBetweenCoordsInKm(src.lat(), src.lng(), des.lat(), des.lng());
+                    nsSportModule.totalDistance += distance;
+
                     let time = nsSportModule.getTimeFromDates(lat_lng_nomaps[i][2], lat_lng_nomaps[i + 1][2]);
+                    nsSportModule.totalTime += time;
+
                     let kmh = distance / time;
 
                     color = nsSportModule.getColor(nsSportModule.mapValue(kmh, 0, 35, 0, 1));
@@ -215,6 +225,11 @@ let nsSportModule = {
                 poly = new google.maps.Polyline(polyOptions);
             }
         }
+
+        nsSportModule.avgSpeed = nsSportModule.totalDistance / nsSportModule.totalTime;
+        nsSportModule.getAvgTemp();
+        console.log("Total distance: " + nsSportModule.totalDistance.toFixed(2) + " km, average speed: " + nsSportModule.avgSpeed.toFixed(2) + " km/h, average temperature: " + nsSportModule.avgTemp.toFixed(2) + "°C");
+        nsSportModule.totalDistance = nsSportModule.totalTime = 0;
     },
 
     getDistanceBetweenCoordsInKm: function (lat1, lon1, lat2, lon2) {
@@ -252,6 +267,31 @@ let nsSportModule = {
     getColor: function (pct) {
         var hue = ((1 - pct) * 120).toString(10);
         return ["hsl(", hue, ",100%,50%)"].join("");
+    },
+
+    getTempBoundaries: function () {
+        this.minTemp = this.maxTemp = this.tphData[0].temperature;
+        for (let i = 1; i < nsSportModule.tphData.length; i++) {
+            if (nsSportModule.minTemp > nsSportModule.tphData[i].temperature)
+                nsSportModule.minTemp = nsSportModule.tphData[i].temperature;
+            if (nsSportModule.maxTemp > nsSportModule.tphData[i].temperature)
+                nsSportModule.maxTemp = nsSportModule.tphData[i].temperature;
+        }
+    },
+
+    getAvgTemp: function () {
+        nsSportModule.avgTemp = 0;
+
+        let totalTemp, count;
+
+        for (count = 0; count < nsSportModule.tphData.length; count++) {
+            if (totalTemp == undefined)
+                totalTemp = nsSportModule.tphData[count].temperature;
+            else
+                totalTemp += nsSportModule.tphData[count].temperature;
+        }
+
+        nsSportModule.avgTemp = totalTemp / i;
     },
 
     mapValue: function (value, in_min, in_max, out_min, out_max) {
